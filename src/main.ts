@@ -3,6 +3,7 @@ import cliState from './cliState';
 import { codeScansCommand } from './codeScan/index';
 import { authCommand } from './commands/auth';
 import { cacheCommand } from './commands/cache';
+import { compareCommand } from './commands/compare';
 import { configCommand } from './commands/config';
 import { debugCommand } from './commands/debug';
 import { deleteCommand } from './commands/delete';
@@ -69,20 +70,7 @@ async function main() {
     : await loadDefaultConfig();
 
   const program = new Command('promptfoo');
-  program
-    .version(VERSION)
-    .showHelpAfterError()
-    .showSuggestionAfterError()
-    .on('option:*', function (this: Command) {
-      const unknownArgs = this.args.filter((arg) => arg.startsWith('-'));
-      if (unknownArgs.length > 0) {
-        logger.error(`Invalid option(s): ${unknownArgs.join(', ')}`);
-      } else {
-        logger.error('Invalid option(s)');
-      }
-      program.help();
-      process.exitCode = 1;
-    });
+  program.version(VERSION).showHelpAfterError().showSuggestionAfterError();
 
   // Main commands
   const evalCmd = evalCommand(program, defaultConfig, defaultConfigPath);
@@ -97,6 +85,7 @@ async function main() {
   authCommand(program);
   cacheCommand(program);
   codeScansCommand(program);
+  compareCommand(program);
   configCommand(program);
   debugCommand(program, defaultConfig, defaultConfigPath);
   deleteCommand(program);
